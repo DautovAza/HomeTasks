@@ -46,6 +46,15 @@ namespace HomeTask.Common
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interaction"",
+                    ""type"": ""Button"",
+                    ""id"": ""fcd7c7cb-f97c-4ed0-bb06-a38c0a8f42c4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -114,6 +123,17 @@ namespace HomeTask.Common
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""def06f73-fa4a-4298-82ca-d01980f3ec80"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interaction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -124,6 +144,7 @@ namespace HomeTask.Common
             m_GamePlay = asset.FindActionMap("GamePlay", throwIfNotFound: true);
             m_GamePlay_Movement = m_GamePlay.FindAction("Movement", throwIfNotFound: true);
             m_GamePlay_Shoot = m_GamePlay.FindAction("Shoot", throwIfNotFound: true);
+            m_GamePlay_Interaction = m_GamePlay.FindAction("Interaction", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -187,12 +208,14 @@ namespace HomeTask.Common
         private List<IGamePlayActions> m_GamePlayActionsCallbackInterfaces = new List<IGamePlayActions>();
         private readonly InputAction m_GamePlay_Movement;
         private readonly InputAction m_GamePlay_Shoot;
+        private readonly InputAction m_GamePlay_Interaction;
         public struct GamePlayActions
         {
             private @GameInputActions m_Wrapper;
             public GamePlayActions(@GameInputActions wrapper) { m_Wrapper = wrapper; }
             public InputAction @Movement => m_Wrapper.m_GamePlay_Movement;
             public InputAction @Shoot => m_Wrapper.m_GamePlay_Shoot;
+            public InputAction @Interaction => m_Wrapper.m_GamePlay_Interaction;
             public InputActionMap Get() { return m_Wrapper.m_GamePlay; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -208,6 +231,9 @@ namespace HomeTask.Common
                 @Shoot.started += instance.OnShoot;
                 @Shoot.performed += instance.OnShoot;
                 @Shoot.canceled += instance.OnShoot;
+                @Interaction.started += instance.OnInteraction;
+                @Interaction.performed += instance.OnInteraction;
+                @Interaction.canceled += instance.OnInteraction;
             }
 
             private void UnregisterCallbacks(IGamePlayActions instance)
@@ -218,6 +244,9 @@ namespace HomeTask.Common
                 @Shoot.started -= instance.OnShoot;
                 @Shoot.performed -= instance.OnShoot;
                 @Shoot.canceled -= instance.OnShoot;
+                @Interaction.started -= instance.OnInteraction;
+                @Interaction.performed -= instance.OnInteraction;
+                @Interaction.canceled -= instance.OnInteraction;
             }
 
             public void RemoveCallbacks(IGamePlayActions instance)
@@ -239,6 +268,7 @@ namespace HomeTask.Common
         {
             void OnMovement(InputAction.CallbackContext context);
             void OnShoot(InputAction.CallbackContext context);
+            void OnInteraction(InputAction.CallbackContext context);
         }
     }
 }
